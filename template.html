@@ -1,0 +1,76 @@
+{% macro decorate_text(text, strong) %}
+  {% if strong %}
+    <strong>{{ text }}</strong>
+  {% else %}
+    {{ text }}
+  {% endif %}
+{% endmacro %}
+
+{% macro gen_td(value, color, strong) %}
+  {% if color %}
+    {% if value < 0.2 %}
+      {% set font_color = '#bc0000' %}
+    {% elif value < 0.4 %}
+      {% set font_color = '#bc7d00' %}
+    {% elif value < 0.6 %}
+      {% set font_color = '#a1af03' %}
+    {% elif value < 0.8 %}
+      {% set font_color = '#81af03' %}
+    {% else %}
+      {% set font_color = '#03af17' %}
+    {% endif %}
+    <td style="color: {{ font_color }};">{{ decorate_text('%0.4f' % value|float, strong) }}</td>
+  {% else %}
+    <td>{{ decorate_text(value, strong) }}</td>
+  {% endif %}
+{% endmacro %}
+
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>CCBoard - Cross Camera Board</title>
+    <meta name="description" content="Interactive board for cross camera dataset">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' type='text/css' href='static/ccboard.css'>
+    <script src="static/jquery.min.js"></script>
+    <script src="static/ccboard.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <h1>{{ root_dir }}</h1>
+      {% for class_metrics in classes_metrics %}
+      <h2>{{ class_metrics.class_dir }}</h2>
+      <div class="table-responsive-vertical shadow-z-1">
+        <table id="table" class="table table-hover table-mc-light-blue">
+          <thead>
+            <tr>
+              <th>Directory</th>
+              <th>IoU</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1 Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for metrics in class_metrics.metrics_list %}
+            <tr>
+              {% if metrics['dir'] == 'AVERAGE' %}
+                {% set strong = True %}
+              {% endif %}
+              {{ gen_td(metrics['dir'], False, strong) }}
+              {{ gen_td(metrics['IoU'], True, strong) }}
+              {{ gen_td(metrics['precision'], True, strong) }}
+              {{ gen_td(metrics['recall'], True, strong) }}
+              {{ gen_td(metrics['F1 score'], True, strong) }}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>
