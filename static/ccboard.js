@@ -34,6 +34,18 @@ $(document).ready(function() {
         var value = $(this).val();
         table.removeClass(/^table-mc-/).addClass(value);
     });
+
+    var collapsed = false;
+    $('#btn').on('click', function() {
+      collapsed = !collapsed;
+      if (collapsed) {
+        $('tr.normal').hide();
+        $(this).html('Expand')
+      } else {
+        $('tr.normal').show();
+        $(this).html('Collapse')
+      }
+    })
 });
 
 // jQuery’s hasClass and removeClass on steroids

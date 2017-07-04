@@ -41,6 +41,7 @@
   <body>
     <div id="main">
       <h1>{{ root_dir }}</h1>
+      <button id="btn">Collapse</button>
       {% for class_metrics in classes_metrics %}
       <h2>{{ class_metrics.class_dir }}</h2>
       <div class="table-responsive-vertical shadow-z-1">
@@ -56,16 +57,21 @@
           </thead>
           <tbody>
             {% for metrics in class_metrics.metrics_list %}
-            <tr>
               {% if metrics['dir'] == 'AVERAGE' %}
                 {% set strong = True %}
               {% endif %}
+              {% if strong %}
+                {% set tr_class = 'strong' %}
+              {% else %}
+                {% set tr_class = 'normal' %}
+              {% endif %}
+              <tr class="{{ tr_class }}">
               {{ gen_td(metrics['dir'], False, strong) }}
               {{ gen_td(metrics['IoU'], True, strong) }}
               {{ gen_td(metrics['precision'], True, strong) }}
               {{ gen_td(metrics['recall'], True, strong) }}
               {{ gen_td(metrics['F1 score'], True, strong) }}
-            </tr>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
